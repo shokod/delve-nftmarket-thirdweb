@@ -1,27 +1,31 @@
-import React, { FormEvent, useState } from 'react'
-import Header from '../components/Header'
-import { useAddress, useContract } from '@thirdweb-dev/react'
+import React, { FormEvent, useState } from 'react';
+import Header from "../components/Header";
+import { useAddress, useContract } from "@thirdweb-dev/react";
 import { useRouter } from 'next/router';
+
 
 type Props = {};
 
 function addItem({ }: Props) {
     const address = useAddress();
-    const router = useRouter;
+    const router = useRouter();
     const [preview, setPreview] = useState<string>();
     const [image, setImage] = useState<File>();
 
-    const contract = useContract(
+
+    const { contract } = useContract(
         process.env.NEXT_PUBLIC_COLLECTION_CONTRACT,
         "nft-collection"
     );
+
     const mintNft = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
         if (!contract || !address) return;
 
         if (!image) {
-            alert("Please select an image")
-            return
+            alert('Please select an image');
+            return;
         }
 
         const target = e.target as typeof e.target & {
@@ -34,8 +38,10 @@ function addItem({ }: Props) {
             description: target.description.value,
             image: image,
         }
+
         try {
             const tx = await contract.mintTo(address, metadata);
+
             const receipt = tx.receipt;
             const tokenId = tx.id;
             const nft = await tx.data();
@@ -43,11 +49,9 @@ function addItem({ }: Props) {
             console.log(receipt, tokenId, nft);
             router.push("/");
         } catch (error) {
-            console.error(error)
-
+            console.log(error)
         }
     };
-    // console.log(contract)
 
     return (
         <div>
