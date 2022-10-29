@@ -13,7 +13,7 @@ import { BanknotesIcon, ClockIcon } from '@heroicons/react/24/outline';
 const Home = () => {
   const { contract } = useContract(
     process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT,
-    "marketplace"
+    'marketplace'
   );
   const { data: listings, isLoading: loadingListings } =
     useActiveListings(contract);
