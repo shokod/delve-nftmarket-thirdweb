@@ -15,10 +15,11 @@ const Home = () => {
     process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT,
     'marketplace'
   );
+
   const { data: listings, isLoading: loadingListings } =
     useActiveListings(contract);
 
-  console.log(listings);
+  //console.log(listings);
 
   return (
     <div className="">
@@ -27,10 +28,13 @@ const Home = () => {
 
       <main className='max-w-6xl mx-auto py-2 px-6'>
         {loadingListings ? (
-          <p className='text-center animate-pulse text-blue-500'>Loading listings...</p>
+          <p className='text-center animate-pulse text-blue-500'>
+            Loading listings...
+          </p>
         ) : (
           <div className='grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-5 mx-auto'>
             {listings?.map((listing) => (
+
               <div
                 className='flex flex-col card hover:scale-105 transition-all duaration-150 ease-out'
                 key={listing.id}>
@@ -43,7 +47,7 @@ const Home = () => {
                   <div>
                     <h2 className='text-lg truncate'>{listing.asset.name}</h2>
                     <hr />
-                    <p className='truncate text-sm text-gray-600 mt-2'>{listing.asset.description}</p>
+                    <p className='truncate text-sm text-gray-600 mt-2'>{listing.asset.description ? listing.asset.description : listing.asset.name}</p>
                   </div>
 
                   <p>
