@@ -182,6 +182,7 @@ function Create({ }: Props) {
 
                                 <label className='border-r font-semi-bold'>Price</label>
                                 <input
+                                    required
                                     type="text"
                                     placeholder="0.05"
                                     className='bg-gray-100 p-5'
@@ -190,8 +191,9 @@ function Create({ }: Props) {
                             </div>
 
                             <button
+                                type="submit"
                                 className='bg-blue-600 text-white rounded-lf p-4 mt-8'
-                                type="submit">
+                            >
                                 Create Listing
                             </button>
                         </div>

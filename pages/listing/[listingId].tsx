@@ -17,6 +17,7 @@ import React, { useEffect, useState } from 'react';
 import Header from '../../components/Header';
 import Countdown from "react-countdown";
 import network from '../../utils/network';
+import { ethers } from "ethers";
 
 type Props = {}
 
@@ -38,6 +39,12 @@ function ListingPage({ }: Props) {
         "marketplace"
     );
 
+
+    const { mutate: makeBid } = useMakeBid(contract);
+
+    const { data: offers } = useOffers(contract, listingId);
+
+    const { mutate: makeOffer } = useMakeOffer(contract);
 
     const { mutate: buyNow } = useBuyNow(contract);
 
@@ -100,16 +107,16 @@ function ListingPage({ }: Props) {
             },
             {
                 onSuccess: (data, variables, context) => {
-                    alert("NFT bought sucessfully!");
-                    console.log('SUCCESS', data, variables, context);
-                    router.replace("/");
+                    alert("NFT bought sucessfully!")
+                    console.log("SUCCESS", data, variables, context)
+                    router.replace("/")
 
                 },
-                onError(error, variables, context) {
-                    alert("Error: NFT could not be bought");
-                    console.log('ERROR', error, variables, context);
-
-                },
+                onError: (error, variables, context) => {
+                    alert("Error: NFT could not be bought")
+                    console.log('ERROR', error, variables, context)
+                    router.replace("/")
+                }
             }
         );
     };
@@ -124,22 +131,59 @@ function ListingPage({ }: Props) {
 
             // Handle Direct Listing
             if (listing?.type === ListingType.Direct) {
+                if (listing.buyoutPrice.toString() === ethers.utils.parseEther
+                    (bidAmount).toString()) {
+                    console.log("Buyout Price met, buying NFT...");
 
+                    buyNft();
+                    return;
+                }
+
+                console.log("Buy out price not met, making offer...");
+                await makeOffer({
+                    quantity: 1,
+                    listingId,
+                    pricePerToken: bidAmount,
+
+                }, {
+                    onSuccess(data, variables, context) {
+                        alert("Offer successful!");
+                        console.log("SUCCESS", data, variables, context);
+                        setBidAmount("")
+                    },
+                    onError(error, variables, context) {
+                        alert("ERROR: Offer failed");
+                        console.log("ERROR", error, variables, context);
+                    },
+                }
+                );
             }
 
-
-
-
             // Handle Auction Listing
+            if (listing?.type === ListingType.Auction) {
+                console.log('Making Bid..');
+
+                await makeBid({
+                    listingId,
+                    bid: bidAmount,
+                }, {
+                    onSuccess(data, variables, context) {
+                        alert("Bid Successful!");
+                        console.log("SUCCESS", data, variables, context);
+                        setBidAmount("")
+                    },
+                    onError(error, variables, context) {
+                        alert("ERROR: bid failed")
+                        console.log("ERROR", error, variables, context);
+                    },
+                });
+            }
         } catch (error) {
             console.error(error)
 
         }
 
-
     };
-
-
 
     if (isLoading)
         return (
@@ -230,8 +274,6 @@ function ListingPage({ }: Props) {
                                 : 'Bid'}
                         </button>
                     </div>
-
-
                 </section>
             </main>
         </div >
