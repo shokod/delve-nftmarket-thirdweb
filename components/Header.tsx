@@ -8,6 +8,7 @@ import {
     MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 import Image from 'next/image';
+import mylogo from '../images/logo.png'
 
 type Props = {}
 
@@ -57,7 +58,7 @@ function Header({ }: Props) {
                         <Image
                             className="h-full w-full object-contain"
                             alt=""
-                            src="https://links.papareact.com/bdb"
+                            src={mylogo}
                             width={100}
                             height={100}
                         />

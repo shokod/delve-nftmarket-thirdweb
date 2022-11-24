@@ -22,8 +22,9 @@ const Home = () => {
 
   //console.log(listings);
 
+
   return (
-    <div className="">
+    <div className="text-black">
 
       <Header />
 
